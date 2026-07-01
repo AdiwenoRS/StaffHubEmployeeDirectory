@@ -17,10 +17,40 @@ class EmployeeController extends BaseController
     // 1. READ: Display all employees
     public function index()
     {
-        $data['employees'] = $this->employeeModel->findAll();
+        // 1. Get query parameters from the URL (Gethandlers)
+        $search     = $this->request->getGet('search');
+        $department = $this->request->getGet('department');
+    
+        // 2. Build the query dynamically using the Model so paginate() works
+        $query = $this->employeeModel;
+    
+        if (!empty($search)) {
+            // Look for matches in Name OR Email
+            $query = $query->groupStart()
+                           ->like('name', $search)
+                           ->orLike('email', $search)
+                           ->groupEnd();
+        }
+    
+        if (!empty($department)) {
+            // Look for exact match in Department
+            $query = $query->where('department', $department);
+        }
+    
+        // 3. Fetch unique departments for our filter dropdown menu
+        $data['departments'] = (new EmployeeModel())->distinct()->findColumn('department') ?? [];
+    
+        // 4. Paginate the results (Change '5' to whatever number of rows per page you want)
+        $data['employees'] = $query->paginate(5);
+        $data['pager'] = $query->pager->only(['search', 'department']);
+        // $data['pager']     = $this->employeeModel->pager;
+    
+        // 5. Retain search/filter values in the view inputs
+        $data['search']          = $search;
+        $data['selected_dept']   = $department;
+    
         return view('employees/index', $data);
     }
-
     // 2. CREATE: Show form
     public function create()
     {
