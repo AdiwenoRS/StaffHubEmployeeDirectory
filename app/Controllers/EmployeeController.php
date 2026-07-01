@@ -66,27 +66,27 @@ class EmployeeController extends BaseController
             'department' => 'required',
             'position'   => 'required',
         ];
-    
+
         if (!$this->validate($rules)) {
             return view('employees/create', ['validation' => $this->validator]);
         }
-    
+
         // ─── CUSTOM BUSINESS ID GENERATION LOGIC ─────────────────────────────
         $yearMonth = date('Ym'); // Outputs formatting string like "202607"
-    
+
         // Count how many employees have IDs starting with the current year and month
         $countThisMonth = $this->employeeModel->like('id', $yearMonth, 'after')->countAllResults();
-    
+
         // Increment current month count by 1 to formulate next index integer
         $nextNumber = $countThisMonth + 1;
-    
+
         // Pad with leading zeros to guarantee a uniform 2-digit format (e.g., 1 -> "01", 12 -> "12")
         $paddedNumber = str_pad($nextNumber, 2, '0', STR_PAD_LEFT);
-    
+
         // Combine them all together: "202607" + "01" = "20260701"
         $customId = $yearMonth . $paddedNumber;
         // ─────────────────────────────────────────────────────────────────────
-    
+
         // Insert the constructed parameters directly into your model save event
         $this->employeeModel->save([
             'id'         => $customId, // Pass your brand new custom ID here!
@@ -95,7 +95,7 @@ class EmployeeController extends BaseController
             'department' => $this->request->getPost('department'),
             'position'   => $this->request->getPost('position'),
         ]);
-    
+
         return redirect()->to('/employees')->with('success', 'Employee added successfully with ID: ' . $customId);
     }
     // 4. UPDATE: Show Edit form
@@ -144,5 +144,61 @@ class EmployeeController extends BaseController
             $this->employeeModel->delete($id);
         }
         return redirect()->to('/employees')->with('success', 'Employee deleted successfully!');
+    }
+
+    // 7. EXPORT: Export filtered data to CSV
+    public function export()
+    {
+        // 1. Capture current filter states to determine dataset size
+        $search     = $this->request->getGet('search');
+        $department = $this->request->getGet('department');
+    
+        $query = $this->employeeModel;
+    
+        if (!empty($search)) {
+            $query = $query->groupStart()
+                           ->like('name', $search)
+                           ->orLike('email', $search)
+                           ->groupEnd();
+        }
+    
+        if (!empty($department)) {
+            $query = $query->where('department', $department);
+        }
+    
+        // Fetch the filtered records from the DB
+        $employees = $query->findAll();
+    
+        // 2. Set the descriptive filename based on the current date string
+        $filename = 'employee_directory_' . date('Ymd_His') . '.csv';
+    
+        // 3. Configure HTTP Header rules to force the browser to handle a file download
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=' . $filename);
+        header('Pragma: no-cache');
+        header('Expires: 0');
+    
+        // 4. Open a virtual system output buffer pointer write stream
+        $output = fopen('php://output', 'w');
+    
+        // 5. Inject column spreadsheet headers
+        fputcsv($output, ['Employee ID', 'Full Name', 'Email Address', 'Department', 'Current Position']);
+    
+        // 6. Loop over database records array row-by-row
+        if (!empty($employees)) {
+            foreach ($employees as $row) {
+                fputcsv($output, [
+                    $row['id'],
+                    $row['name'],
+                    $row['email'],
+                    $row['department'],
+                    $row['position']
+                ]);
+            }
+        }
+    
+        // 7. Close output stream pointer allocation and terminate process explicitly
+        fclose($output);
+        exit;
     }
 }

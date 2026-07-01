@@ -27,6 +27,9 @@
             
             <div class="col-md-3 d-flex gap-2">
                 <button type="submit" class="btn btn-dark w-100">Filter</button>
+                <a href="<?= base_url('employees/export') . '?' . http_build_query(['search' => $search ?? '', 'department' => $selected_dept ?? '']) ?>" class="btn btn-success w-100">
+                    Export
+                </a>
                 <a href="<?= base_url('employees') ?>" class="btn btn-outline-secondary w-100">Reset</a>
             </div>
 
