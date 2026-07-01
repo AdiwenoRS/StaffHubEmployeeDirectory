@@ -8,7 +8,7 @@ class EmployeeModel extends Model
 {
     protected $table            = 'employees';
     protected $primaryKey       = 'id';
-    protected $useAutoIncrement = true;
+    protected $useAutoIncrement = false; // Disable auto-increment for custom ID
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;

@@ -66,21 +66,38 @@ class EmployeeController extends BaseController
             'department' => 'required',
             'position'   => 'required',
         ];
-
+    
         if (!$this->validate($rules)) {
             return view('employees/create', ['validation' => $this->validator]);
         }
-
+    
+        // ─── CUSTOM BUSINESS ID GENERATION LOGIC ─────────────────────────────
+        $yearMonth = date('Ym'); // Outputs formatting string like "202607"
+    
+        // Count how many employees have IDs starting with the current year and month
+        $countThisMonth = $this->employeeModel->like('id', $yearMonth, 'after')->countAllResults();
+    
+        // Increment current month count by 1 to formulate next index integer
+        $nextNumber = $countThisMonth + 1;
+    
+        // Pad with leading zeros to guarantee a uniform 2-digit format (e.g., 1 -> "01", 12 -> "12")
+        $paddedNumber = str_pad($nextNumber, 2, '0', STR_PAD_LEFT);
+    
+        // Combine them all together: "202607" + "01" = "20260701"
+        $customId = $yearMonth . $paddedNumber;
+        // ─────────────────────────────────────────────────────────────────────
+    
+        // Insert the constructed parameters directly into your model save event
         $this->employeeModel->save([
+            'id'         => $customId, // Pass your brand new custom ID here!
             'name'       => $this->request->getPost('name'),
             'email'      => $this->request->getPost('email'),
             'department' => $this->request->getPost('department'),
             'position'   => $this->request->getPost('position'),
         ]);
-
-        return redirect()->to('/employees')->with('success', 'Employee added successfully!');
+    
+        return redirect()->to('/employees')->with('success', 'Employee added successfully with ID: ' . $customId);
     }
-
     // 4. UPDATE: Show Edit form
     public function edit($id = null)
     {
