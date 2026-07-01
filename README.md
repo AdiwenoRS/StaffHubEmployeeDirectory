@@ -150,6 +150,12 @@ docker-compose down -v
 
 ```
 
+Login Credential (Optional: Change the credential on AuthController line 23 with your secret credential variables for better security in production)
+```
+username: Admin
+passowrd: supersecret123
+```
+
 ---
 
 ## 📂 Core Feature Directory Matrix
@@ -160,6 +166,4 @@ docker-compose down -v
 * **Delete:** Inline JavaScript execution confirmation handling safe server-side records destruction and emitting validation notifications via Flash Sessions.
 """
 
-with open("README.md", "w") as f:
-f.write(readme_content.strip())
-print("README.md file written successfully.")
+
