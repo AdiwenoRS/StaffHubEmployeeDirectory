@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS `employees`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `employees` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `id` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
   `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
   `email` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
   `department` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE `employees` (
   `created_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,7 @@ CREATE TABLE `employees` (
 
 LOCK TABLES `employees` WRITE;
 /*!40000 ALTER TABLE `employees` DISABLE KEYS */;
-INSERT INTO `employees` VALUES (2,'Bob Jones','bob@company.com','HR','HR Manager',NULL),(3,'Charlie Brown','charlie@company.com','Marketing','SEO Specialist',NULL),(4,'Artha','artha@mail.com','IT','Developer',NULL);
+INSERT INTO `employees` VALUES ('20260701','Joji','joji@mail.com','IT','Front-end dev',NULL),('20260702','Condi','condi@mail.com','Marketing','Lead Marketing',NULL),('20260703','Inter John','johnint@yahoo.com','HR','Lead',NULL);
 /*!40000 ALTER TABLE `employees` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -60,7 +60,7 @@ CREATE TABLE `migrations` (
   `time` int NOT NULL,
   `batch` int unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -69,7 +69,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2026-07-01-152416','App\\Database\\Migrations\\CreateEmployeesTable','default','App',1782923502,1);
+INSERT INTO `migrations` VALUES (1,'2026-07-01-152416','App\\Database\\Migrations\\CreateEmployeesTable','default','App',1782923502,1),(2,'2026-07-01-170155','App\\Database\\Migrations\\AlterEmployeesIdType','default','App',1782925388,2);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -82,4 +82,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-07-01 16:37:32
+-- Dump completed on 2026-07-01 17:08:45
