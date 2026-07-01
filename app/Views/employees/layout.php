@@ -14,6 +14,12 @@
                 <img src="<?= base_url('logo.png') ?>" alt="Logo" width="30" height="30" class="d-inline-block align-text-top me-2">
                 StaffHub
             </a>
+            <?php if (session()->get('isLoggedIn')): ?>
+                <span class="navbar-text">
+                    Logged in as <strong><?= esc(session()->get('username')) ?></strong> | 
+                    <a href="<?= base_url('auth/logout') ?>" class="text-danger ms-2 text-decoration-none">🔓 Logout</a>
+                </span>
+            <?php endif; ?>
         </div>
     </nav>
 

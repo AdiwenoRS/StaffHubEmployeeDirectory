@@ -13,7 +13,7 @@
             <div class="col-md-4">
                 <div class="card shadow-lg border-0">
                     <div class="card-body p-4 text-center">
-                        <h3 class="mb-1">🏢 StaffHub</h3>
+                        <h3 class="mb-1">StaffHub</h3>
                         <p class="text-muted small mb-4">Internal Directory Gateway Portal</p>
                         
                         <?php if (session()->getFlashdata('error')): ?>
